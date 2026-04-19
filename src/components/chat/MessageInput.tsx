@@ -1,5 +1,6 @@
-import { useState, type FormEvent } from "react"
-import { Send } from "lucide-react"
+import { useState, FormEvent } from 'react'
+import { Send } from 'lucide-react'
+import VoiceInput from './VoiceInput'
 
 interface MessageInputProps {
   onSend: (message: string) => void
@@ -7,26 +8,33 @@ interface MessageInputProps {
 }
 
 export default function MessageInput({ onSend, isLoading }: MessageInputProps) {
-  const [input, setInput] = useState("")
+  const [input, setInput] = useState('')
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     if (input.trim() && !isLoading) {
       onSend(input.trim())
-      setInput("")
+      setInput('')
     }
+  }
+
+  const handleVoiceTranscript = (text: string) => {
+    setInput(prev => prev + (prev ? ' ' : '') + text)
   }
 
   return (
     <form onSubmit={handleSubmit} className="glass-effect rounded-2xl p-3 flex gap-2">
+      <VoiceInput onTranscript={handleVoiceTranscript} disabled={isLoading} />
+      
       <input
         type="text"
         value={input}
         onChange={(e) => setInput(e.target.value)}
-        placeholder="Scrie un mesaj..."
+        placeholder="Scrie sau vorbeste..."
         className="flex-1 bg-transparent border-none outline-none text-gray-100 placeholder-gray-500"
         disabled={isLoading}
       />
+      
       <button
         type="submit"
         disabled={!input.trim() || isLoading}
