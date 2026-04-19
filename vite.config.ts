@@ -7,12 +7,12 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['vite.svg'],
+      includeAssets: ['icons/*.svg'],
       manifest: {
         name: 'Optimus - Asistent Personal AI',
         short_name: 'Optimus',
         description: 'Asistentul tau personal pentru productivitate si wellbeing',
-        theme_color: '#0f172a',
+        theme_color: '#6366f1',
         background_color: '#0f172a',
         display: 'standalone',
         orientation: 'portrait',
@@ -20,11 +20,21 @@ export default defineConfig({
         start_url: '/',
         icons: [
           {
-            src: 'vite.svg',
+            src: '/icons/icon-192.svg',
             sizes: '192x192',
-            type: 'image/svg+xml'
+            type: 'image/svg+xml',
+            purpose: 'any'
+          },
+          {
+            src: '/icons/icon-512.svg',
+            sizes: '512x512',
+            type: 'image/svg+xml',
+            purpose: 'any maskable'
           }
         ]
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
       }
     })
   ],
