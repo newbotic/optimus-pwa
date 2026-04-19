@@ -1,5 +1,6 @@
 import { Calendar, CheckCircle2, Activity, Moon, Zap, ChevronRight, MessageCircle } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import IOSInstallGuide from '../components/IOSInstallGuide'
 
 function Dashboard() {
   const navigate = useNavigate()
@@ -165,6 +166,9 @@ function Dashboard() {
           </div>
         </div>
       </div>
+      
+      {/* iOS Install Guide */}
+      <IOSInstallGuide />
     </div>
   )
 }
