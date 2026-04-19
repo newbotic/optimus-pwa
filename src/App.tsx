@@ -1,5 +1,6 @@
 import { useState } from "react"
 import ChatWindow from "./components/chat/ChatWindow"
+import InstallPrompt from "./components/InstallPrompt"
 
 export interface Message {
   id: string
@@ -24,12 +25,17 @@ function App() {
     setIsLoading(true)
 
     try {
-      const response = await fetch(import.meta.env.VITE_N8N_WEBHOOK_URL || "", {
+      const webhookUrl = import.meta.env.VITE_N8N_WEBHOOK_URL
+      
+      if (!webhookUrl) {
+        throw new Error("Webhook URL not configured")
+      }
+
+      const response = await fetch(webhookUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
-          message: content,
-          sessionId: "demo-session"
+          message: content
         })
       })
 
@@ -39,16 +45,16 @@ function App() {
       
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: data.response || data.message || data.output || "Nu am primit raspuns.",
+        content: data[0]?.output || data.output || "Nu am primit raspuns.",
         role: "assistant",
         timestamp: new Date()
       }
       
       setMessages(prev => [...prev, assistantMessage])
-    } catch {
+    } catch (error) {
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: "Acesta este un raspuns de test. Conecteaza-ma la n8n pentru raspunsuri reale!",
+        content: "Eroare la conectare. Verifica n8n sau incearca mai tarziu.",
         role: "assistant",
         timestamp: new Date()
       }
@@ -59,11 +65,14 @@ function App() {
   }
 
   return (
-    <ChatWindow 
-      messages={messages}
-      onSendMessage={handleSendMessage}
-      isLoading={isLoading}
-    />
+    <>
+      <ChatWindow 
+        messages={messages}
+        onSendMessage={handleSendMessage}
+        isLoading={isLoading}
+      />
+      <InstallPrompt />
+    </>
   )
 }
 
